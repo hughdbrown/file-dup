@@ -31,7 +31,9 @@ pub fn files_matching_pattern(pattern: &str) -> Vec<PathBuf>
 // pub fn process(path: &Path, ext: &str, all_files: &Vec<PathBuf>) {
 pub fn process(path: &Path, ext: &str, all_files: &[PathBuf]) {
     let name: String = path.file_stem().unwrap().to_string_lossy().into_owned();
-    let name_re = name.replace("(", "\\(").replace(")", "\\)");
+    let name_re = name
+        .replace('(', r"\(")
+        .replace(')', r"\)");
     let orig_path_str = path.to_str().unwrap();
     let regex_str = format!(r"{name_re} \(\d+\){ext}");
     let re = Regex::new(&regex_str).unwrap();
