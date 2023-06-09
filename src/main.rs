@@ -45,7 +45,7 @@ fn run(app: AppArgs) {
         // FIXME: Can't pass a reference because PathBuf does not implement Copy.
         // So clone a copy in memory for each call instead ...
         let copy = files.clone();
-        process(&path, &ext, &copy);
+        process(path, &ext, &copy);
     }
 }
 fn main() {

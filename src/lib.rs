@@ -28,7 +28,8 @@ pub fn files_matching_pattern(pattern: &str) -> Vec<PathBuf>
         .collect()
 }
 
-pub fn process(path: &Path, ext: &str, all_files: &Vec<PathBuf>) {
+// pub fn process(path: &Path, ext: &str, all_files: &Vec<PathBuf>) {
+pub fn process(path: &Path, ext: &str, all_files: &[PathBuf]) {
     let name: String = path.file_stem().unwrap().to_string_lossy().into_owned();
     let name_re = name.replace("(", "\\(").replace(")", "\\)");
     let orig_path_str = path.to_str().unwrap();
@@ -42,7 +43,8 @@ pub fn process(path: &Path, ext: &str, all_files: &Vec<PathBuf>) {
             }
             return false;
         })
-        .map(|p| p.clone())
+        //.map(|p| p.clone())
+        .cloned()
         .collect();
 
     if !files.is_empty() {
