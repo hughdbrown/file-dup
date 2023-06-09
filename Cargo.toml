@@ -1,0 +1,24 @@
+[package]
+name = "file-dup"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+clap = { version = "4.3.2", features = ["derive"] }
+sha1 = "0.10.5"
+tempfile = "3.6.0"
+data-encoding = "2.4.0"
+chrono = "0.4.26"
+glob = "0.3.1"
+regex = "1.8.4"
+# globset = "0.4"
+
+[dev-dependencies]
+criterion = "0.4"
+
+[[bench]]
+name = "scoring_benchmark"
+harness = false
+
