@@ -69,16 +69,14 @@ pub fn process(path: &Path, ext: &str, all_files: &[PathBuf]) {
                 }
             }
         }
-        if ! heap.is_empty() {
-            if let Some(max_val) = heap.pop() {
-                println!("rm \"{}\"", orig_path_str);
-                while ! heap.is_empty() {
-                    if let Some(other_val) = heap.pop() {
-                        println!("rm \"{}\"", other_val.1);
-                    }
+        if let Some(max_val) = heap.pop() {
+            println!("rm \"{}\"", orig_path_str);
+            while ! heap.is_empty() {
+                if let Some(other_val) = heap.pop() {
+                    println!("rm \"{}\"", other_val.1);
                 }
-                println!("mv \"{}\" \"{}\"", max_val.1, orig_path_str);
             }
+            println!("mv \"{}\" \"{}\"", max_val.1, orig_path_str);
         }
     }
 }
