@@ -41,6 +41,7 @@ fn run(app: AppArgs) {
     let pattern = format!("*{ext}");
     let files: Vec<PathBuf> = files_matching_pattern(&pattern);
 
+    println!("# Processing {} {} files", files.len(), &ext);
     for path in files.iter() {
         // FIXME: Can't pass a reference because PathBuf does not implement Copy.
         // So clone a copy in memory for each call instead ...
