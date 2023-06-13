@@ -12,6 +12,7 @@ data-encoding = "2.4.0"
 chrono = "0.4.26"
 glob = "0.3.1"
 regex = "1.8.4"
+cargo-watch = "8.4.0"
 
 [dev-dependencies]
 tempfile = "3.6.0"
