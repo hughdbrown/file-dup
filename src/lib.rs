@@ -43,7 +43,7 @@ pub fn process(path: &Path, ext: &str, all_files: &[PathBuf]) {
             if let Some(path_str) = p.to_str() {
                 return re.is_match(path_str);
             }
-            return false;
+            false
         })
         //.map(|p| p.clone())
         .cloned()
