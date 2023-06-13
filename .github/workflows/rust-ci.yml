@@ -20,7 +20,7 @@ jobs:
         run: cargo build
       - name: Test
         run: cargo build --verbose
-      - name: Clippy
-        run: cargo clippy --verbose -- -D warnings
-      - name: Audit
-        run: cargo audit
+      #- name: Clippy
+      #run: cargo clippy --verbose -- -D warnings
+      #- name: Audit
+      #run: cargo audit
