@@ -19,7 +19,6 @@ pub type MyResult<T> = Result<T, Box<dyn Error>>;
 pub struct AppArgs {
     /// File extension to search for
     pub filetype: String,
-    pub parallel: bool,
 }
 
 pub fn files_matching_pattern(pattern: &str) -> Vec<PathBuf>
