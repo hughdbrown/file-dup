@@ -21,10 +21,12 @@ mod tests {
     use chrono::prelude::{DateTime, Utc, Local};
 
     fn iso8601(st: &std::time::SystemTime) -> String {
-        let dt: DateTime<Utc> = st.clone().into();
-        format!("{}", dt.format("%+"))
+        let utc: DateTime<Utc> = st.clone().into();
+        let local: DateTime<Local> = DateTime::from(utc);
+        format!("{}", local.format("%+"))
         // formats like "2001-07-08T00:34:60.026490+09:30"
     }
+
 
     #[test]
     fn test_creation_time() {
