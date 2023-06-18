@@ -26,8 +26,7 @@ fn get_args() -> MyResult<AppArgs> {
         .arg(filetype_arg);
     let matches = command.get_matches();
 
-    let filetype: &String = matches.get_one("filetype").unwrap();
-    let filetype: String = filetype.clone();
+    let filetype: String = matches.get_one::<String>("filetype").unwrap().to_string();
 
     Ok(
         AppArgs { filetype, }
@@ -36,22 +35,23 @@ fn get_args() -> MyResult<AppArgs> {
 
 fn collapse_strings(result: &[String]) -> String {
     result.iter()
-        .filter(|s| !s.is_empty())
+        .filter(|s: &&String| !(**s).is_empty())
         .cloned()
         .collect::<Vec::<String>>()
         .join("\n")
 }
 
-
 fn run_parallel(files: &[PathBuf], ext: &str) {
     let result = files.par_iter()
-        .map(|path| {
-            // FIXME: Can't pass a reference because PathBuf does not implement Copy.
-            // So clone a copy in memory for each call instead ...
-            let prefix = path.file_stem().unwrap().to_str().unwrap();
+        .map(|path: &PathBuf| {
+            let prefix: &str = path.file_stem().unwrap().to_str().unwrap();
             let copy: Vec<PathBuf> = files
                 .iter()
-                .filter(|pb| pb.file_stem().unwrap().to_str().unwrap().starts_with(prefix))
+                .filter(|pb: &&PathBuf|
+                    (**pb).file_stem()
+                    .unwrap().to_str()
+                    .unwrap().starts_with(prefix)
+                )
                 .cloned()
                 .collect();
             process(path, ext, &copy)
@@ -66,8 +66,8 @@ fn main() {
         Ok(app) => {
             // Find all the files that have the required extension.
             // Make this fast by scanning the disk only once.
-            let ext = app.filetype;
-            let pattern = format!("*{ext}");
+            let ext: String = app.filetype;
+            let pattern: String = format!("*{ext}");
             let files: Vec<PathBuf> = files_matching_pattern(&pattern);
             println!("# Processing {} {} files", files.len(), &ext);
 

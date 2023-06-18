@@ -28,39 +28,37 @@ pub fn files_matching_pattern(pattern: &str) -> Vec<PathBuf>
         .collect()
 }
 
-// pub fn process(path: &Path, ext: &str, all_files: &Vec<PathBuf>) {
 pub fn process(path: &Path, ext: &str, all_files: &[PathBuf]) -> String {
     let name: String = path.file_stem().unwrap().to_string_lossy().into_owned();
-    let name_re = name
+    let name_re: String = name
         .replace('(', r"\(")
         .replace(')', r"\)");
-    let orig_path_str = path.to_str().unwrap();
-    let regex_str = format!(r"{name_re} \(\d+\){ext}");
-    let re = Regex::new(&regex_str).unwrap();
+    let orig_path_str: &str = path.to_str().unwrap();
+    let regex_str: String = format!(r"{name_re} \(\d+\){ext}");
+    let re: Regex = Regex::new(&regex_str).unwrap();
     let files: Vec<PathBuf> = all_files
         .iter()
-        .filter(|p| {
+        .filter(|p: &&PathBuf| {
             if let Some(path_str) = p.to_str() {
                 return re.is_match(path_str);
             }
             false
         })
-        //.map(|p| p.clone())
         .cloned()
         .collect();
 
-    let mut result = vec![];
+    let mut result: Vec<String> = vec![];
     if !files.is_empty() {
         // SHA1 hash of base file
-        let orig_hash = file_hash(path).unwrap();
+        let orig_hash: String = file_hash(path).unwrap();
         result.push(
             format!("# {} {} {}", "-".repeat(30), path.display(), orig_hash)
         );
         let mut heap = BinaryHeap::new();
 
         for file_path in files {
-            let pp = file_path.as_path();
-            let copy_hash = file_hash(pp).unwrap();
+            let pp: &Path = file_path.as_path();
+            let copy_hash: String = file_hash(pp).unwrap();
             result.push(
                 format!("# {} {}", pp.display(), copy_hash)
             );
