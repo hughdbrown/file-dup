@@ -1,6 +1,6 @@
 [package]
 name = "file-dup"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -18,5 +18,7 @@ rayon = "1.7.0"
 [dev-dependencies]
 tempfile = "3.6.0"
 
+# debug = true to profile release code
 [profile.release]
 debug = true
+lto = true
