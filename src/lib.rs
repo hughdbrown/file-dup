@@ -19,11 +19,13 @@ pub type MyResult<T> = Result<T, Box<dyn Error>>;
 pub struct AppArgs {
     /// File extension to search for
     pub filetype: String,
+    pub dir: String,
 }
 
-pub fn files_matching_pattern(pattern: &str) -> Vec<PathBuf>
+pub fn files_matching_pattern(dir: &str, pattern: &str) -> Vec<PathBuf>
 {
-    glob(pattern).unwrap()
+    let glob_pattern = format!("{dir}/{pattern}");
+    glob(&glob_pattern).unwrap()
         .flatten()
         .collect()
 }
