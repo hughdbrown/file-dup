@@ -1,27 +1,46 @@
 use std::{
     fs::File,
-    io,
+    io::{self, BufReader, Read},
     path::Path,
 };
 use blake3;
 use data_encoding::HEXLOWER;
 
+// Optimized file hashing function
 pub fn file_hash(file_path: &Path) -> Result<String, io::Error> {
-    // Use memory mapping for large files
+    const SMALL_FILE_THRESHOLD: u64 = 1_000_000; // 1MB threshold
+    const BUFFER_SIZE: usize = 8 * 1024 * 1024; // 8MB buffer for reading
+
+    // Open the file once
     let file = File::open(file_path)?;
     let metadata = file.metadata()?;
     let file_size = metadata.len();
     
-    // For small files, use direct reading
-    if file_size < 10_000_000 { // 10MB threshold
+    if file_size < SMALL_FILE_THRESHOLD {
+        // For small files, use buffered reading with a single hasher
         let mut hasher = blake3::Hasher::new();
-        let _ = io::copy(&mut File::open(file_path)?, &mut hasher)?;
+        let mut reader = BufReader::with_capacity(64 * 1024, file); // 64KB buffer for small files
+        let mut buffer = [0; 64 * 1024];
+        
+        loop {
+            let bytes_read = reader.read(&mut buffer)?;
+            if bytes_read == 0 {
+                break;
+            }
+            hasher.update(&buffer[..bytes_read]);
+        }
+        
         let hash = hasher.finalize();
         Ok(HEXLOWER.encode(hash.as_bytes()))
     } else {
-        // For large files, use memory mapping
+        // For large files, use memory mapping which is faster for large files
         let mmap = unsafe { memmap2::Mmap::map(&file)? };
-        let hash = blake3::hash(&mmap);
+        
+        // Use rayon to parallelize the hashing of large files
+        let hash = blake3::Hasher::new()
+            .update_rayon(&mmap)
+            .finalize();
+            
         Ok(HEXLOWER.encode(hash.as_bytes()))
     }
 }
