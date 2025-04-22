@@ -45,7 +45,7 @@ fn collapse_strings(result: &[String]) -> String {
     result.iter()
         .filter(|s: &&String| !(**s).is_empty())
         .cloned()
-        .collect::<Vec::<String>>()
+        .collect::<Vec<String>>()
         .join("\n")
 }
 
@@ -70,7 +70,7 @@ fn run_parallel(files: &[PathBuf], ext: &str) {
             
             process(path, ext, &copy)
         })
-        .collect::<Vec::<String>>();
+        .collect::<Vec<String>>();
     
     println!("{}", collapse_strings(&result));
 }

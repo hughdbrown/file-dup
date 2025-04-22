@@ -33,7 +33,7 @@ mod tests {
     use tempfile::NamedTempFile;
 
     #[test]
-    fn test_calculate_sha1_file() {
+    fn test_calculate_hash_file() {
         // Create a temporary file
         let mut file = NamedTempFile::new().unwrap();
 
@@ -42,10 +42,11 @@ mod tests {
         
         let file_path = file.path();
 
-        // Calculate the SHA1 hash
+        // Calculate the hash
         let hash = file_hash(file_path).unwrap();
 
-        // Verify the expected hash value
-        assert_eq!(hash, "60fde9c2310b0d4cad4dab8d126b04387efba289");
+        // With BLAKE3, we need to update the expected hash value
+        let expected_hash = blake3::hash("Hello, World!\n".as_bytes());
+        assert_eq!(hash, HEXLOWER.encode(expected_hash.as_bytes()));
     }
 }
