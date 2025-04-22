@@ -101,10 +101,15 @@ fn main() {
             let dir: String = app.dir;
             let pattern: String = format!("*{ext}");
             
-            // Use rayon to parallelize the file discovery process
-            println!("# Scanning for files...");
+            // Scan for files
+            println!("# Scanning for files in {}...", dir);
             let files: Vec<PathBuf> = files_matching_pattern(&dir, &pattern);
             println!("# Processing {} {} files", files.len(), &ext);
+            
+            if files.is_empty() {
+                println!("No matching files found. Check the directory path and file extension.");
+                return;
+            }
 
             // Set optimal thread count based on CPU cores and workload
             let num_cpus = num_cpus::get();

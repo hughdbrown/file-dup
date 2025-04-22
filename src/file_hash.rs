@@ -9,7 +9,7 @@ use data_encoding::HEXLOWER;
 // Optimized file hashing function
 pub fn file_hash(file_path: &Path) -> Result<String, io::Error> {
     const SMALL_FILE_THRESHOLD: u64 = 1_000_000; // 1MB threshold
-    const BUFFER_SIZE: usize = 8 * 1024 * 1024; // 8MB buffer for reading
+    const BUFFER_SIZE: usize = 64 * 1024; // 64KB buffer for small files
 
     // Open the file once
     let file = File::open(file_path)?;
@@ -19,8 +19,8 @@ pub fn file_hash(file_path: &Path) -> Result<String, io::Error> {
     if file_size < SMALL_FILE_THRESHOLD {
         // For small files, use buffered reading with a single hasher
         let mut hasher = blake3::Hasher::new();
-        let mut reader = BufReader::with_capacity(64 * 1024, file); // 64KB buffer for small files
-        let mut buffer = [0; 64 * 1024];
+        let mut reader = BufReader::with_capacity(BUFFER_SIZE, file);
+        let mut buffer = [0; BUFFER_SIZE];
         
         loop {
             let bytes_read = reader.read(&mut buffer)?;
