@@ -50,21 +50,28 @@ fn collapse_strings(result: &[String]) -> String {
 }
 
 fn run_parallel(files: &[PathBuf], ext: &str) {
+    // Create a thread pool with a reasonable number of threads
     let result = files.par_iter()
+        .with_min_len(4) // Process at least 4 items per thread to reduce overhead
         .map(|path: &PathBuf| {
             let prefix: &str = path.file_stem().unwrap().to_str().unwrap();
-            let copy: Vec<PathBuf> = files
-                .iter()
-                .filter(|pb: &&PathBuf|
-                    (**pb).file_stem()
-                    .unwrap().to_str()
-                    .unwrap().starts_with(prefix)
-                )
-                .cloned()
-                .collect();
+            
+            // Pre-filter the files to avoid repeated string operations
+            let copy: Vec<PathBuf> = {
+                let prefix_owned = prefix.to_string();
+                files.par_iter()
+                    .filter(|pb: &&PathBuf| {
+                        let stem = pb.file_stem().unwrap().to_str().unwrap();
+                        stem.starts_with(&prefix_owned)
+                    })
+                    .cloned()
+                    .collect()
+            };
+            
             process(path, ext, &copy)
         })
         .collect::<Vec::<String>>();
+    
     println!("{}", collapse_strings(&result));
 }
 
