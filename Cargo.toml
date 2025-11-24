@@ -1,6 +1,6 @@
 [package]
 name = "file-dup"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2024"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -12,13 +12,14 @@ data-encoding = "2.4.0"
 chrono = "0.4.26"
 glob = "0.3.1"
 regex = "1.8.4"
-cargo-audit = "0.17.6"
 rayon = "1.7.0"
 memmap2 = "0.9.0"
 num_cpus = "1.16.0"
 
 [dev-dependencies]
 tempfile = "3.6.0"
+assert_cmd = "2.0"
+predicates = "3.0"
 
 # debug = true to profile release code
 [profile.release]
