@@ -8,8 +8,6 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.3.3", features = ["derive"] }
 blake3 = { version = "1.5.0", features = ["rayon"] }
-data-encoding = "2.4.0"
-chrono = "0.4.26"
 glob = "0.3.1"
 regex = "1.8.4"
 rayon = "1.7.0"
@@ -17,11 +15,16 @@ memmap2 = "0.9.0"
 num_cpus = "1.16.0"
 
 [dev-dependencies]
+chrono = "0.4.26"
 tempfile = "3.6.0"
 assert_cmd = "2.0"
 predicates = "3.0"
 
 # debug = true to profile release code
 [profile.release]
-debug = true
+debug = false
 lto = true
+opt-level = "z"        # Optimize for size
+codegen-units = 1      # Better optimization, slower compile
+panic = "abort"        # Don't include unwinding code
+strip = true           # Strip symbols from binary

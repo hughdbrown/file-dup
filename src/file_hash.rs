@@ -4,7 +4,6 @@ use std::{
     path::Path,
 };
 use blake3;
-use data_encoding::HEXLOWER;
 
 // Optimized file hashing function
 pub fn file_hash(file_path: &Path) -> Result<String, io::Error> {
@@ -31,7 +30,7 @@ pub fn file_hash(file_path: &Path) -> Result<String, io::Error> {
         }
         
         let hash = hasher.finalize();
-        Ok(HEXLOWER.encode(hash.as_bytes()))
+        Ok(hash.to_hex().to_string())
     } else {
         // For large files, use memory mapping which is faster for large files
         let mmap = unsafe { memmap2::Mmap::map(&file)? };
@@ -40,8 +39,8 @@ pub fn file_hash(file_path: &Path) -> Result<String, io::Error> {
         let hash = blake3::Hasher::new()
             .update_rayon(&mmap)
             .finalize();
-            
-        Ok(HEXLOWER.encode(hash.as_bytes()))
+
+        Ok(hash.to_hex().to_string())
     }
 }
 
@@ -66,6 +65,6 @@ mod tests {
 
         // With BLAKE3, we need to update the expected hash value
         let expected_hash = blake3::hash("Hello, World!\n".as_bytes());
-        assert_eq!(hash, HEXLOWER.encode(expected_hash.as_bytes()));
+        assert_eq!(hash, expected_hash.to_hex().to_string());
     }
 }
